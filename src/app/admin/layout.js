@@ -7,12 +7,16 @@ import { getSession, logout } from "@/lib/adminAuth";
 
 // NOTE: this gate is client-side and for local preview only. Before
 // deploying, protect /admin/* with server-side middleware that checks a
-// real Supabase session (Vishyx-Techie-Admin-Panel-Spec.md §5).
+// real Appwrite session (Vishyx-Techie-Admin-Panel-Spec.md §5).
 
 const NAV = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/about", label: "About page" },
   { href: "/admin/services", label: "Services" },
+  { href: "/admin/manage/products", label: "Products" },
+  { href: "/admin/manage/blog", label: "Blog" },
+  { href: "/admin/manage/faq", label: "FAQ" },
+  { href: "/admin/manage/submissions", label: "Submissions" },
 ];
 
 export default function AdminLayout({ children }) {

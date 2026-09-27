@@ -1,33 +1,43 @@
-import { services } from "@/lib/content";
+import { services, products } from "@/lib/content";
 
-const BASE_URL = "https://www.vishyxtechie.in";
-
-const staticRoutes = [
-  "",
-  "/services",
-  "/pricing",
-  "/products",
-  "/about",
-  "/blog",
-  "/contact",
-  "/faq",
-  "/privacy-policy",
-  "/terms-and-conditions",
-  "/cookie-policy",
-  "/disclaimer",
-  "/refund-policy",
-];
+const BASE_URL = "https://vishyxtechie.in";
 
 export default function sitemap() {
-  const staticEntries = staticRoutes.map((route) => ({
-    url: `${BASE_URL}${route}`,
-    lastModified: new Date(),
+  // Keep `lastModified` truthful rather than changing every time the sitemap is requested.
+  const lastModified = new Date("2026-09-27T00:00:00.000Z");
+
+  const staticRoutes = [
+    { path: "/", priority: 1.0, changeFrequency: "weekly" },
+    { path: "/about", priority: 0.7, changeFrequency: "monthly" },
+    { path: "/services", priority: 0.9, changeFrequency: "weekly" },
+    { path: "/products", priority: 0.8, changeFrequency: "weekly" },
+    { path: "/pricing", priority: 0.9, changeFrequency: "weekly" },
+    { path: "/blog", priority: 0.6, changeFrequency: "weekly" },
+    { path: "/faq", priority: 0.6, changeFrequency: "monthly" },
+    { path: "/contact", priority: 0.7, changeFrequency: "monthly" },
+    { path: "/privacy-policy", priority: 0.2, changeFrequency: "yearly" },
+    { path: "/terms-and-conditions", priority: 0.2, changeFrequency: "yearly" },
+    { path: "/cookie-policy", priority: 0.2, changeFrequency: "yearly" },
+    { path: "/disclaimer", priority: 0.2, changeFrequency: "yearly" },
+    { path: "/refund-policy", priority: 0.2, changeFrequency: "yearly" },
+  ];
+
+  const serviceRoutes = services.map((s) => ({
+    path: `/services/${s.slug}`,
+    priority: 0.8,
+    changeFrequency: "monthly",
   }));
 
-  const serviceEntries = services.map((service) => ({
-    url: `${BASE_URL}/services/${service.slug}`,
-    lastModified: new Date(),
+  const productRoutes = products.map((p) => ({
+    path: `/products/${p.slug}`,
+    priority: 0.7,
+    changeFrequency: "monthly",
   }));
 
-  return [...staticEntries, ...serviceEntries];
+  return [...staticRoutes, ...serviceRoutes, ...productRoutes].map((route) => ({
+    url: `${BASE_URL}${route.path}`,
+    lastModified,
+    changeFrequency: route.changeFrequency,
+    priority: route.priority,
+  }));
 }

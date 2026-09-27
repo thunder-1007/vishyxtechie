@@ -181,11 +181,11 @@ Non-technical staff log into a clean CMS dashboard (not your codebase) to
 edit copy, images, prices, and blog posts. Preview before publish is
 built in.
 
-**Option B — Supabase-backed admin (fits your existing stack):**
-Since your other project already runs on Supabase, you could build a
-lightweight custom `/admin` panel (auth-gated, Supabase as the database)
-with simple forms for each content type. More control, more build time —
-worth it only if you want everything on one backend.
+**Option B — Appwrite-backed admin (selected):**
+A lightweight custom `/admin` panel (Appwrite Auth-gated, Appwrite
+Databases as the backend) with simple forms for each content type — full
+control, and Appwrite bundles the database, auth, and file storage you'd
+otherwise need three separate services for.
 
 Either way: `/admin` is `noindex`, IP-unrestricted but auth-gated, and
 never linked from public navigation.
@@ -196,7 +196,7 @@ never linked from public navigation.
 
 - **Frontend:** Next.js (React) — fast, SEO-friendly (SSR/SSG), good
   Core Web Vitals out of the box.
-- **CMS/Backend:** Sanity or Strapi (Option A) / Supabase (Option B).
+- **CMS/Backend:** Sanity or Strapi (Option A) / Appwrite (Option B).
 - **Hosting:** Netlify or Vercel (both integrate cleanly with Next.js).
 - **Forms:** native form + serverless function, or a form service
   (e.g. Resend for transactional email on submit).

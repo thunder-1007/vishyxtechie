@@ -4,60 +4,156 @@
   --color-primary: #16233e;
   --color-primary-deep: #0e1728;
   --color-primary-soft: #2c3d5e;
+  --color-on-primary-mute: #aab6cc;
+
   --color-accent: #b8863b;
   --color-accent-deep: #96692a;
   --color-accent-soft: #e7d3ac;
+
   --color-paper: #f5f2ea;
   --color-paper-soft: #fbfaf6;
+
   --color-ink: #1c1c1a;
   --color-ink-mute: #5b5b54;
   --color-ink-faint: #8b8b82;
+
   --color-hairline: #dad5c6;
   --color-hairline-strong: #c2bca8;
+
   --color-success: #3d6b4c;
   --color-error: #a23b2e;
 }
 
+/*
+ * Tailwind CSS v4 theme
+ * Note: @theme is a Tailwind v4 directive - IDE warnings can be ignored
+ */
+/* stylelint-disable-next-line at-rule-no-unknown */
 @theme inline {
   --color-primary: var(--color-primary);
   --color-primary-deep: var(--color-primary-deep);
   --color-primary-soft: var(--color-primary-soft);
+  --color-on-primary-mute: var(--color-on-primary-mute);
+
   --color-accent: var(--color-accent);
   --color-accent-deep: var(--color-accent-deep);
   --color-accent-soft: var(--color-accent-soft);
+
   --color-paper: var(--color-paper);
   --color-paper-soft: var(--color-paper-soft);
+
   --color-ink: var(--color-ink);
   --color-ink-mute: var(--color-ink-mute);
   --color-ink-faint: var(--color-ink-faint);
+
   --color-hairline: var(--color-hairline);
   --color-hairline-strong: var(--color-hairline-strong);
+
   --color-success: var(--color-success);
   --color-error: var(--color-error);
 
-  --font-headline: var(--font-fraunces), Georgia, "Times New Roman", serif;
-  --font-body: var(--font-plex-sans), "Segoe UI", system-ui, sans-serif;
-  --font-data: var(--font-plex-mono), "Courier New", monospace;
+  --font-headline:
+    var(--font-plex-serif),
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  --font-body:
+    var(--font-plex-sans),
+    "Segoe UI",
+    system-ui,
+    sans-serif;
+
+  --font-data:
+    var(--font-plex-mono),
+    "Courier New",
+    monospace;
+}
+
+/*
+ * Base reset
+ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html, body {
+  min-width: 320px;
 }
 
 body {
+  width: 100%;
+  min-height: 100%;
   background: var(--color-paper);
   color: var(--color-ink);
+
   font-family: var(--font-body);
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  overflow-x: hidden;
 }
 
-h1, h2, h3 {
+/*
+ * Typography
+ */
+h1,
+h2,
+h3 {
   font-family: var(--font-headline);
   font-weight: 500;
   letter-spacing: -0.02em;
 }
 
-/* One orchestrated load animation — homepage hero only */
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+/*
+ * Interactive transitions
+ */
+a,
+button {
+  transition:
+    color 150ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 150ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 150ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 150ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 150ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/*
+ * Focus accessibility
+ */
+*:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/*
+ * Layout normalization
+ */
+
+/*
+ * Homepage load animation
+ */
 @keyframes rise-in {
   from {
     opacity: 0;
     transform: translateY(28px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -65,29 +161,102 @@ h1, h2, h3 {
 }
 
 .load-in {
-  animation: rise-in 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation:
+    rise-in
+    600ms
+    cubic-bezier(0.16, 1, 0.3, 1)
+    both;
 }
 
 .load-in-delay {
-  animation: rise-in 600ms cubic-bezier(0.16, 1, 0.3, 1) 120ms both;
+  animation:
+    rise-in
+    600ms
+    cubic-bezier(0.16, 1, 0.3, 1)
+    120ms
+    both;
 }
 
-/* Skeleton loader — quiet pulse, no shimmer sweep */
+/*
+ * Photography animation
+ */
+@keyframes kenburns {
+  from {
+    transform: scale(1);
+  }
+
+  to {
+    transform: scale(1.06);
+  }
+}
+
+/*
+ * Skeleton loader
+ */
 @keyframes quiet-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.55; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.55;
+  }
 }
 
 .skeleton {
   background: var(--color-paper-soft);
   border: 1px solid var(--color-hairline);
-  animation: quiet-pulse 1.4s ease-in-out infinite;
+
+  animation:
+    quiet-pulse
+    1.4s
+    ease-in-out
+    infinite;
 }
 
+.hero-grid-bg {
+  background-image: linear-gradient(rgba(255,255,255,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: linear-gradient(to bottom, black, transparent);
+}
+
+@keyframes drift-a { 50% { transform: translate(24px, 18px) scale(1.08); } }
+@keyframes drift-b { 50% { transform: translate(-22px, -16px) scale(.95); } }
+@keyframes float { 50% { transform: translateY(-10px); } }
+@keyframes blink { 50% { opacity: 0; } }
+.animate-drift-a { animation: drift-a 10s ease-in-out infinite; }
+.animate-drift-b { animation: drift-b 12s ease-in-out infinite; }
+.animate-float { animation: float 4s ease-in-out infinite; }
+.caret-blink { animation: blink 1s step-end infinite; }
+.pulse-dot { animation: quiet-pulse 1.5s ease-in-out infinite; }
+
+/* Decorative systems visuals: composited shapes only, no video payload. */
+.tree-lines { background-image: linear-gradient(135deg, transparent 48%, rgba(184,134,59,.45) 49%, rgba(184,134,59,.45) 51%, transparent 52%), linear-gradient(45deg, transparent 48%, rgba(145,169,211,.4) 49%, rgba(145,169,211,.4) 51%, transparent 52%); background-size: 80px 80px; }
+.visual-orb { box-shadow: 0 0 0 1px rgba(255,255,255,.14), 0 24px 60px rgba(14,23,40,.35); }
+
+.btn-modern { transition: transform 180ms cubic-bezier(.16,1,.3,1), box-shadow 180ms cubic-bezier(.16,1,.3,1), background-color 180ms ease, color 180ms ease, border-color 180ms ease; }
+.btn-modern:hover { transform: translateY(-3px); }
+.btn-modern:active { transform: translateY(0) scale(.98); }
+
 @media (prefers-reduced-motion: reduce) {
-  .load-in,
-  .load-in-delay,
-  .skeleton {
-    animation: none !important;
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+/*
+ * Reduced motion
+ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

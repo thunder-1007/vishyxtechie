@@ -2,13 +2,14 @@
 
 // MOCK AUTH — for local preview only.
 //
-// TODO: replace every function here with real Supabase Auth calls per
+// TODO: replace every function here with real Appwrite Auth calls per
 // Vishyx-Techie-Admin-Panel-Spec.md §3–5:
-//   - login()   -> supabase.auth.signInWithPassword({ email, password })
-//   - logout()  -> supabase.auth.signOut()
-//   - isLoggedIn() -> check supabase.auth.getSession() server-side in
-//                      middleware, not localStorage — this mock is NOT secure
-//                      and must not ship to production.
+//   - login()   -> account.createEmailPasswordSession(email, password)
+//   - logout()  -> account.deleteSession('current')
+//   - isLoggedIn() -> check account.get() server-side in middleware, not
+//                      localStorage — this mock is NOT secure and must not
+//                      ship to production.
+// (using the Appwrite Node/Web SDK's `Account` service)
 
 const KEY = "vishyx-admin-mock-session";
 

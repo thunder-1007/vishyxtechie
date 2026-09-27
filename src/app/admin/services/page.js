@@ -18,7 +18,7 @@ export default function AdminServicesPage() {
   function persist(next) {
     setItems(next);
     // TODO: replace with
-    //   supabase.from("services").update({ title, summary, updated_at }).eq("id", id)
+    //   databases.updateDocument(DB_ID, "services", documentId, { title, summary })
     // per Vishyx-Techie-Admin-Panel-Spec.md §2–3.
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
   }
@@ -108,7 +108,7 @@ export default function AdminServicesPage() {
 
       <p className="mt-6 text-xs text-ink-faint">
         Demo mode: changes save to your browser&apos;s local storage, not
-        the public site. Wire up Supabase per the Admin Panel Spec to make
+        the public site. Wire up Appwrite per the Admin Panel Spec to make
         this drive the real Services pages.
       </p>
     </div>

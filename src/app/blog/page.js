@@ -5,7 +5,7 @@ export const metadata = {
   description: "Insights on running a business online, from Vishyx Techie.",
 };
 
-// Posts will come from Supabase's `blog_posts` table (see
+// Posts will come from Appwrite's `blog_posts` collection (see
 // Vishyx-Techie-Admin-Panel-Spec.md) once the admin panel is wired up.
 const posts = [];
 

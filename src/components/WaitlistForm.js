@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 export default function WaitlistForm({ productSlug, productName }) {
   const [status, setStatus] = useState("idle"); // idle | submitting | success | error
@@ -30,9 +31,10 @@ export default function WaitlistForm({ productSlug, productName }) {
 
     setStatus("submitting");
     try {
-      // TODO: replace with a real submit to Supabase's `waitlist_submissions`
-      // table (see Vishyx-Techie-Admin-Panel-Spec.md) once the project is
-      // connected — e.g. supabase.from("waitlist_submissions").insert({...}).
+      // TODO: replace with a real submit to Appwrite's `waitlist_submissions`
+      // collection once the project is connected — e.g.
+      //   databases.createDocument(DB_ID, "waitlist_submissions", ID.unique(), {...})
+      // (see Vishyx-Techie-Admin-Panel-Spec.md).
       await new Promise((resolve) => setTimeout(resolve, 600));
       setStatus("success");
     } catch {
@@ -49,7 +51,7 @@ export default function WaitlistForm({ productSlug, productName }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <motion.form initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .35, ease: [0.16, 1, 0.3, 1] }} onSubmit={handleSubmit} className="space-y-4">
       <input type="hidden" name="product" value={productSlug} />
 
       <Field label="Name" name="name" error={errors.name} />
@@ -76,11 +78,11 @@ export default function WaitlistForm({ productSlug, productName }) {
       <button
         type="submit"
         disabled={status === "submitting"}
-        className="w-full rounded-md bg-accent px-5 py-3 text-sm font-semibold text-primary transition-colors duration-150 hover:bg-accent-deep hover:text-paper disabled:opacity-60"
+        className="btn-modern w-full rounded-full bg-accent px-5 py-3 text-sm font-semibold text-primary shadow-[0_8px_20px_rgba(150,105,42,.2)] hover:bg-accent-deep hover:text-paper disabled:opacity-60"
       >
         {status === "submitting" ? "Submitting…" : `Pre-book ${productName}`}
       </button>
-    </form>
+    </motion.form>
   );
 }
 

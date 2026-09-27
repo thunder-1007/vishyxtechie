@@ -2,9 +2,10 @@
 *Last updated: 26 Sep 2026*
 
 Goal: non-technical staff manage Blog, Services, Pricing, Contact info,
-About, and Products content without touching code. Built on **Supabase**
-(Option B from the Website Plan) since it matches your existing stack on
-Formiva CaseFlow — one backend, one set of credentials to manage.
+About, and Products content without touching code. Built on **Appwrite
+Cloud** per your request — a document/collection API with built-in Auth
+and Storage, so you're not standing up a separate database, auth
+provider, and file host separately.
 
 ---
 
@@ -12,9 +13,11 @@ Formiva CaseFlow — one backend, one set of credentials to manage.
 
 - **Frontend:** Next.js — public site and `/admin` live in the same repo,
   admin routes behind auth middleware.
-- **Backend:** Supabase (Postgres + Auth + Storage).
+- **Backend:** Appwrite Cloud (Databases + Auth + Storage). Appwrite's
+  Databases run on MariaDB internally, but you work through Appwrite's
+  document/collection API — not raw SQL.
 - **Hosting:** Netlify or Vercel.
-- **Auth:** Supabase Auth, email + password, single role: `admin` (add
+- **Auth:** Appwrite Auth, email + password, single role: `admin` (add
   `editor` later if you bring on content staff who shouldn't touch
   pricing/legal).
 
@@ -23,7 +26,7 @@ public nav — reachable only by direct URL + login.
 
 ---
 
-## 2. Data model (Supabase tables)
+## 2. Data model (Appwrite collections)
 
 ```
 services
@@ -56,22 +59,26 @@ waitlist_submissions
   id, product_slug, name, email, phone, company, notes, created_at
 ```
 
-Every content table gets `updated_at` (auto-set on save) so the public
-site can show "Last updated" per your requirement. `is_published` lets
-staff draft content without it going live.
+Appwrite auto-tracks `$createdAt`/`$updatedAt` on every document, which
+covers the "Last updated" requirement without a manual field. `isPublished`
+lets staff draft content without it going live.
 
-**Row-Level Security:** enable RLS on every table. Public (anon) role gets
-`SELECT` only, and only where `is_published = true`. All `INSERT`/`UPDATE`/
-`DELETE` require the authenticated `admin` role. `contact_submissions` and
-`waitlist_submissions` allow public `INSERT` only (so the forms can write)
-— no public `SELECT`, so nobody can read other people's submissions.
+**Permissions (Appwrite's equivalent of RLS):** every collection is
+created with document-level permissions instead of SQL policies —
+`Permission.read(Role.any())` for published content,
+`Permission.create/update/delete(Role.users())` restricted to logged-in
+admins. `contact_submissions` and `waitlist_submissions` get
+`Permission.create(Role.any())` only — anyone can submit the form, but
+only an authenticated admin can read, update, or delete the entries, so
+nobody can read other people's submissions. The exact permission sets are
+defined in `appwrite/setup.js`.
 
 ---
 
 ## 3. Admin routes & screens
 
 ```
-/admin/login              Email + password (Supabase Auth)
+/admin/login              Email + password (Appwrite Account API)
 /admin                    Dashboard — recent submissions, quick links
 /admin/services           List + reorder + edit/create/delete
 /admin/packages           List + edit (feature list as add/remove rows)
@@ -100,11 +107,12 @@ public-site personality into the admin tool. Function over branding here.
 
 ## 4. Image handling
 
-- Supabase Storage bucket `content-images`, public read, admin-only
-  write.
+- Appwrite Storage bucket `content-images`, with bucket permissions set
+  to public read, admin-only write (same `Role.any()` / `Role.users()`
+  pattern as the database collections).
 - Upload widget in blog/services/products editors → auto-generates a
   public URL, stored in the relevant `image` field.
-- Recommend client-side compression before upload (or a Supabase Edge
+- Recommend client-side compression before upload (or an Appwrite
   Function) so oversized images never hit the CDN — keeps Core Web
   Vitals intact without staff needing to know what that means.
 
@@ -112,25 +120,27 @@ public-site personality into the admin tool. Function over branding here.
 
 ## 5. Security checklist
 
-- [ ] `/admin/*` routes check Supabase session server-side (middleware),
-      redirect to `/admin/login` if absent.
-- [ ] RLS enabled and tested on every table (try an anon write from the
-      browser console — it should fail).
-- [ ] Supabase service role key never exposed client-side — only the
-      public anon key ships to the browser.
-- [ ] Rate limiting / basic bot protection on public form inserts
-      (contact + waitlist) — Supabase Edge Function or a simple honeypot
+- [ ] `/admin/*` routes check the Appwrite session server-side
+      (middleware), redirect to `/admin/login` if absent.
+- [ ] Permissions set and tested on every collection (try an anonymous
+      write from the browser console — it should fail).
+- [ ] Appwrite **API key** (server-side, used by `appwrite/setup.js`)
+      never exposed client-side — only the public endpoint + project ID
+      ship to the browser, same split as Supabase's anon vs. service key.
+- [ ] Rate limiting / basic bot protection on public form submissions
+      (contact + waitlist) — an Appwrite Function or a simple honeypot
       field is enough at this scale.
-- [ ] Password reset flow enabled via Supabase Auth.
-- [ ] Environment variables (`SUPABASE_URL`, `SUPABASE_ANON_KEY`,
-      `SUPABASE_SERVICE_ROLE_KEY`) kept in Netlify/Vercel env settings,
-      never committed to the repo.
+- [ ] Password reset flow enabled via the Appwrite Account API.
+- [ ] Environment variables (`APPWRITE_ENDPOINT`, `APPWRITE_PROJECT_ID`,
+      `APPWRITE_API_KEY`, and the public
+      `NEXT_PUBLIC_APPWRITE_ENDPOINT`/`NEXT_PUBLIC_APPWRITE_PROJECT_ID`)
+      kept in Netlify/Vercel env settings, never committed to the repo.
 
 ---
 
 ## 6. Build order (suggested)
 
-1. Supabase project + tables + RLS policies
+1. Appwrite project + collections + permissions (`node appwrite/setup.js`)
 2. Auth + `/admin/login` + route protection
 3. Settings + About (simplest, single-record screens — good first build
    to confirm the auth/CRUD pattern works)
@@ -145,9 +155,9 @@ public-site personality into the admin tool. Function over branding here.
 ## Handing this to Cursor
 
 Give Cursor all four files together — `DESIGN.md`, the Website Plan, the
-Website Content doc, and this Admin Panel spec — plus a Supabase project
-already created (or ask Cursor to write the SQL migration for the tables
-above).
+Website Content doc, and this Admin Panel spec — plus an Appwrite Cloud
+project already created (or ask Cursor to run `appwrite/setup.js` for the
+collections above).
 
 Suggested first prompt to paste into Cursor:
 
@@ -158,16 +168,16 @@ Content.md for all page copy, and Vishyx-Techie-Admin-Panel-Spec.md for
 the admin panel's data model and screens.
 
 Scaffold a Next.js project with:
-1. The Supabase table schema and RLS policies from the Admin Panel spec
-   as a SQL migration file
-2. Supabase Auth-protected /admin routes per the spec
+1. The Appwrite collections and permissions from the Admin Panel spec,
+   set up via appwrite/setup.js
+2. Appwrite Account-API-protected /admin routes per the spec
 3. The public site's page structure from the Website Plan, styled per
    DESIGN.md, with copy from the Content doc as placeholder content
-   pulled from Supabase where the admin panel manages it
+   pulled from Appwrite where the admin panel manages it
 
-Start with the Supabase migration and the /admin/login + /admin/about
-screens first, so I can confirm the auth pattern before you build the
-rest.
+Start with the Appwrite collection setup and the /admin/login +
+/admin/about screens first, so I can confirm the auth pattern before you
+build the rest.
 ```
 
 That last line matters — it keeps Cursor from generating the entire

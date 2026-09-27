@@ -66,7 +66,7 @@ export default function AdminLoginPage() {
         </form>
 
         <p className="mt-6 text-xs text-ink-faint">
-          Demo mode: any email + password logs you in. Wire up Supabase
+          Demo mode: any email + password logs you in. Wire up Appwrite
           Auth per Vishyx-Techie-Admin-Panel-Spec.md before real use.
         </p>
       </div>

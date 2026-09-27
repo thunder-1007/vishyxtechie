@@ -20,7 +20,7 @@ export default function AdminAboutPage() {
   function handleSave(e) {
     e.preventDefault();
     // TODO: replace with
-    //   supabase.from("about").update({ body, updated_at: new Date() }).eq("id", 1)
+    //   databases.updateDocument(DB_ID, "site_settings", documentId, { body })
     // per Vishyx-Techie-Admin-Panel-Spec.md §2–3.
     window.localStorage.setItem(STORAGE_KEY, body);
     setSaved(true);
@@ -59,7 +59,7 @@ export default function AdminAboutPage() {
 
       <p className="mt-8 text-xs text-ink-faint">
         Demo mode: saved to your browser&apos;s local storage only. Wire up
-        Supabase to persist this for real and drive the public About page
+        Appwrite to persist this for real and drive the public About page
         from it.
       </p>
     </div>
